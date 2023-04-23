@@ -9,10 +9,10 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'config.php';
 
 $user_id = $_SESSION['user_id'];
-
+$tg_bot_user_id = 1;
 $sql = "SELECT * FROM telegram_bot WHERE user_id = ?";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $user_id);
+$stmt->bind_param("i", $tg_bot_user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $bot_info = $result->fetch_assoc();
@@ -88,22 +88,24 @@ $stmt->close();
     <?php if ($bot_info['uit_aan'] == 0): ?>
         <form action="process_edit.php" method="post" enctype="multipart/form-data">
             <input type="hidden" name="user_id" value="<?= $user_id ?>">
-            <label for="api_id">API ID:</label>
-            <input type="text" name="api_id" id="api_id" value="<?php echo htmlspecialchars($bot_info['api_id']); ?>">
-            <br>
-        
-            <label for="api_hash">API Hash:</label>
-            <input type="text" name="api_hash" id="api_hash" value="<?php echo htmlspecialchars($bot_info['api_hash']); ?>">
-            <br>
-        
-            <label for="pauze_seconden">Pauze seconden:</label>
-            <input type="number" name="pauze_seconden" id="pauze_seconden" value="<?php echo htmlspecialchars($bot_info['pauze_seconden']); ?>">
-            <br>
-        
-            <label for="telefoon_nummer">Telefoon nummer:</label>
-            <input type="text" name="telefoon_nummer" id="telefoon_nummer" value="<?php echo htmlspecialchars($bot_info['telefoon_nummer']); ?>">
-            <br>
-        
+			<?php if ($user_id != 1): ?>
+    		<label for="api_id">API ID:</label>
+    		<input type="text" name="api_id" id="api_id" value="<?php echo htmlspecialchars($bot_info['api_id']); ?>">
+    		<br>
+
+    		<label for="api_hash">API Hash:</label>
+    		<input type="text" name="api_hash" id="api_hash" value="<?php echo htmlspecialchars($bot_info['api_hash']); ?>">
+    		<br>
+
+    		<label for="telefoon_nummer">Telefoon nummer:</label>
+    		<input type="text" name="telefoon_nummer" id="telefoon_nummer" value="<?php echo htmlspecialchars($bot_info['telefoon_nummer']); ?>">
+    		<br>
+			<?php endif; ?>        
+            
+        	<?php if ($user_id == 1): ?>
+        	 <label for="pauze_seconden">Pauze seconden:</label>
+    		<input type="number" name="pauze_seconden" id="pauze_seconden" value="<?php echo htmlspecialchars($bot_info['pauze_seconden']); ?>">
+    		<br>
             <label for="message">Message:</label>
             <textarea name="message" id="message" maxlength="5000"><?php echo htmlspecialchars($bot_info['message']); ?></textarea>
             <br>
@@ -112,19 +114,24 @@ $stmt->close();
             <br>
             <label for="photo2">Photo 2:</label>
             <input type="file" name="photo2" id="photo2">
+            <?php endif; ?>  
             <br>
             <input type="submit" value="Opslaan">
         </form>
+        <?php if ($user_id == 1): ?>
         <form action="toggle_bot.php" method="post">
             <input type="hidden" name="user_id" value="<?= $user_id ?>">
             <input type="submit" value="Zet aan">
         </form>
+        <?php endif; ?>
     <?php else: ?>
+    	<?php if ($user_id == 1): ?>
         <p>Bot is actief. Kan niet bewerken.</p>
         <form action="toggle_bot.php" method="post">
             <input type="hidden" name="user_id" value="<?= $user_id ?>">
             <input type="submit" value="Zet uit">
         </form>
-    <?php endif; ?>
+    	<?php endif; ?>
+    <?php endif; ?> 
 </body>
 </html>
