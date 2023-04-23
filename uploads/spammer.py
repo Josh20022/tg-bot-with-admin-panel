@@ -14,8 +14,8 @@ from telethon.errors.rpcerrorlist import PeerFloodError
 # Database connection
 def get_data_from_database(user_id):
     connection = pymysql.connect(host='localhost',
-                                 user='root',
-                                 password='',
+                                 user='george',
+                                 password='q0m81k4j',
                                  db='my_database')
     try:
         with connection.cursor() as cursor:
